@@ -23,7 +23,7 @@ OPCODES = {
 }
 
 def int_to_bit_array(number, padding = 4):
-    return [int(x) for x in bin(number)[2:].rjust(padding, '0')][::-1]
+    return [x for x in bin(number)[2:].rjust(padding, '0')][::-1]
 
 def check_register_validity(register, msg):
     if register[0] != "r" or int(register[1:]) >= 16:
