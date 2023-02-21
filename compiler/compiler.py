@@ -1,68 +1,43 @@
-from utils import *
+import sys
 
-file_name = '../programs/file.s'
-f = open(file_name, 'r')
-lines = f.readlines()
-f.close()
+from keywords import OPERATION_CODES, BRANCHING_CODES
+from encoders import encode_operation, encode_branching
 
-def instruction(args):
-    tmp = ['0'] * 32
-    current_index = 0
-    # Set IV Flag
-    if True in [a.isdigit() for a in args]:
-        tmp[24] = '1'
-    
-    # Set opcode
-    tmp[20:24] = int_to_bit_array(OPCODES[args[current_index]])
-    opcode = args[current_index]
+if __name__ == '__main__':
 
-    # Set destination
-    if not opcode == "CMP":
-        current_index += 1
-        dest = args[current_index]
-        check_register_validity(dest, "destination")
-        tmp[8:12] = int_to_bit_array(int(dest[1:]))
+    if len(sys.argv) != 2:
+        print('[+] Usage: python3 compiler.py [INPUT FILE]')
+        sys.exit(1)
 
-    if opcode != "MOV":
-        current_index += 1
-        # Set first operand
-        check_register_validity(args[current_index], "first operand")
-        tmp[16:20] = int_to_bit_array(int(args[current_index][1:]))
-    
-    current_index += 1
-    # Set second operand or immediate value
-    if tmp[24] == '1':
-        tmp[0:8] = int_to_bit_array(int(args[current_index]), 8)
-    else:
-        check_register_validity(args[current_index], "second operand")
-        tmp[12:16] = int_to_bit_array(int(args[current_index][1:]))
+    filename = sys.argv[1]
+    try:
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print(f'[-] Could not find: {filename}')
+        sys.exit(1)
 
-    return tmp
+    if not filename.endswith('.s'):
+        print('[-] Input must be an assembly file.')
+        sys.exit(1)
 
-def branch(args):
-    tmp = ['0'] * 32
+    # Read the assembly file line by line and encode each instruction
+    instructions = []
+    for line in lines:
+        instruction = line.strip().replace(',', '').split(' ')
+        match instruction[0]:
+            case x if str(x).startswith(';'):  # Allow comments
+                continue
+            case x if x in OPERATION_CODES:
+                encoded_instruction = encode_operation(instruction)
+            case x if x in BRANCHING_CODES:
+                encoded_instruction = encode_branching(instruction)
+            case _:
+                raise Exception(f'Unknown operation: {line}')
+        instructions += encoded_instruction[::-1]  # Reverse order to match big endianness
 
-    tmp[28:32] = int_to_bit_array(BCC[args[0]])
-    tmp[27] = '1' if int(args[1]) < 1 else '0'
-    tmp[0:27] = int_to_bit_array(abs(int(args[1])), 27)
-    return tmp
-
-binary = []
-
-for l in lines:
-    l = l.strip()
-    if l[0] == ';': continue
-    args = l.replace(',', '').split(' ')
-    if args[0] in OPCODES:
-        tmp = instruction(args)
-    elif args[0] in BCC:
-        tmp = branch(args)
-    else:
-        raise Exception(f"Unknown operation: {l}")
-    binary += tmp[::-1]
-
-res = [int(''.join(binary[i:i+8]), 2) for i in range(0, len(binary), 8)]
-
-f = open(file_name.replace(".s", ".bin"), 'wb')
-f.write(bytearray(res))
-f.close()
+    # Write binary file
+    binary = [int(''.join(instructions[i:i + 8]), 2) for i in range(0, len(instructions), 8)]
+    binary_filename = filename.replace('.s', '.bin')
+    with open(binary_filename, 'wb') as f:
+        f.write(bytearray(binary))
