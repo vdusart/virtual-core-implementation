@@ -1,0 +1,14 @@
+
+
+pub struct Executor;
+
+impl Executor {
+    pub fn add(&self, ope1: i64, ope2: i64, dest: &mut i64) {
+        println!("je suis le add");
+        *dest = ope1 + ope2;
+    }
+
+    pub fn sub(&self) {
+        println!("Je suis le sub");
+    }
+}
