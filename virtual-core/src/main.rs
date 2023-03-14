@@ -24,6 +24,8 @@ impl TryFrom<u32> for OperationCodes {
     fn try_from(v: u32) -> Result<Self, Self::Error> {
         match v {
             x if x == OperationCodes::ADD as u32 => Ok(OperationCodes::ADD),
+            x if x == OperationCodes::SUB as u32 => Ok(OperationCodes::SUB),
+            x if x == OperationCodes::MOV as u32 => Ok(OperationCodes::MOV),
             _ => Err(()),
         }
     }
@@ -87,8 +89,11 @@ fn execute_instruction(instruction: u32, registers: &mut Vec<i64>) {
 
         match opcode.try_into() {
             Ok(OperationCodes::ADD) => executor.add(ope1, ope2, dest),
+            Ok(OperationCodes::SUB) => executor.sub(ope1, ope2, dest),
+            Ok(OperationCodes::MOV) => executor.mov(ope2, dest),
             _ => println!("Unknown opcode"),
         }
+        println!("r1 = {0}", registers[1]);
         println!("r2 = {0}", registers[2]);
         println!("r3 = {0}", registers[3]);
 

@@ -8,7 +8,13 @@ impl Executor {
         *dest = ope1 + ope2;
     }
 
-    pub fn sub(&self) {
-        println!("Je suis le sub");
+    pub fn sub(&self, ope1: i64, ope2: i64, dest: &mut i64) {
+        println!("je suis le sub");
+        *dest = ope1 - ope2;
+    }
+
+    pub fn mov(&self, ope1: i64, dest: &mut i64) {
+        println!("je suis le mov");
+        *dest = ope1;
     }
 }
