@@ -79,7 +79,7 @@ fn main() {
         execute_instruction(*instruction, &mut registers, &mut flags);
     }
     for (i, r) in registers.iter().enumerate() {
-        println!("r{i} = {:#16x}", r);
+        println!("r{:#02} = {:#018x}", i, r);
     }
 
 }
