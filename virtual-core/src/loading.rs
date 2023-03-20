@@ -16,7 +16,6 @@ pub fn set_internal_state(filename: String, registers: &mut Vec<u64>) {
         let line = line_or_error.unwrap();
         let splitted_line: Vec<&str> = line.split("0x").collect();
         let str_value = splitted_line.get(1).unwrap();
-        println!("{str_value}");
         let value = u64::from_str_radix(&str_value, 16).unwrap();
         registers.push(value);
     }
