@@ -25,9 +25,17 @@ fn execute_instruction(instruction: u32, registers: &mut Vec<i64>) {
 
 
         match opcode.try_into() {
+            Ok(keywords::OperationCodes::AND) => executor.and(ope1, ope2, dest),
+            Ok(keywords::OperationCodes::ORR) => executor.orr(ope1, ope2, dest),
+            Ok(keywords::OperationCodes::EOR) => executor.eor(ope1, ope2, dest),
             Ok(keywords::OperationCodes::ADD) => executor.add(ope1, ope2, dest),
+            Ok(keywords::OperationCodes::ADC) => executor.adc(ope1, ope2, dest),
+            Ok(keywords::OperationCodes::CMP) => executor.cmp(ope1, ope2, dest),
             Ok(keywords::OperationCodes::SUB) => executor.sub(ope1, ope2, dest),
+            Ok(keywords::OperationCodes::SBC) => executor.sbc(ope1, ope2, dest),
             Ok(keywords::OperationCodes::MOV) => executor.mov(ope2, dest),
+            Ok(keywords::OperationCodes::LSH) => executor.lsh(ope1, ope2, dest),
+            Ok(keywords::OperationCodes::RSH) => executor.rsh(ope1, ope2, dest),
             _ => println!("Unknown opcode"),
         }
         println!("r1 = {0}", registers[1]);
@@ -61,6 +69,8 @@ fn main() {
     loading::load_binary_file(args[1].to_string(), &mut instructions);
     for instruction in instructions.iter() {
         // println!("{:032b}", instruction);
+        // fetch
+        // decode
         execute_instruction(*instruction, &mut registers);
     }
     for (i, r) in registers.iter().enumerate() {
