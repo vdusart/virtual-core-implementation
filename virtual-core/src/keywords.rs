@@ -1,4 +1,6 @@
-pub enum OperationCodes  {
+use core::fmt;
+
+pub enum OperationCodes {
     AND = 0x0,
     ORR = 0x1,
     EOR = 0x2,
@@ -29,6 +31,48 @@ impl TryFrom<u32> for OperationCodes {
             x if x == OperationCodes::LSH as u32 => Ok(OperationCodes::LSH),
             x if x == OperationCodes::RSH as u32 => Ok(OperationCodes::RSH),
             _ => Err(()),
+        }
+    }
+}
+
+pub enum BranchingCodes {
+    B   = 0x8,
+    BEQ = 0x9,
+    BNE = 0xa,
+    BLE = 0xb,
+    BGE = 0xc,
+    BL  = 0xd,
+    BG  = 0xe
+}
+
+
+impl TryFrom<u32> for BranchingCodes {
+    type Error = ();
+
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        match v {
+            x if x == BranchingCodes::B as u32 => Ok(BranchingCodes::B),
+            x if x == BranchingCodes::BEQ as u32 => Ok(BranchingCodes::BEQ),
+            x if x == BranchingCodes::BNE as u32 => Ok(BranchingCodes::BNE),
+            x if x == BranchingCodes::BLE as u32 => Ok(BranchingCodes::BLE),
+            x if x == BranchingCodes::BGE as u32 => Ok(BranchingCodes::BGE),
+            x if x == BranchingCodes::BL as u32 => Ok(BranchingCodes::BL),
+            x if x == BranchingCodes::BG as u32 => Ok(BranchingCodes::BG),
+            _ => Err(()),
+        }
+    }
+}
+
+impl fmt::Display for BranchingCodes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            BranchingCodes::B => write!(f, "B"),
+            BranchingCodes::BEQ => write!(f, "BEQ"),
+            BranchingCodes::BNE => write!(f, "BNE"),
+            BranchingCodes::BLE => write!(f, "BLE"),
+            BranchingCodes::BGE => write!(f, "BGE"),
+            BranchingCodes::BL => write!(f, "BL"),
+            BranchingCodes::BG => write!(f, "BG"),
         }
     }
 }
