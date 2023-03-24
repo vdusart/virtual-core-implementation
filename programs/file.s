@@ -4,10 +4,10 @@
 ; ADD r3, r2, 22
 ; ADD r4, r3, r3
 ; SUB r1, r1, 1
-ADD r1, r1, 1
-ADD r1, r1, 1
-ADC r1, r1, 0
-; CMP r1, 0
+B 2
+SUB r3, r3, 1
+CMP r3, 0
+BNE -2
 ; BNE -3
 ; MOV r0, 0
 ; MOV r1, 5
