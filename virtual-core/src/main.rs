@@ -4,7 +4,7 @@ mod executor;
 mod keywords;
 mod loading;
 
-fn execute_instruction(instruction: u32, registers: &mut Vec<u64>, flags: &mut HashMap<String, bool>) {
+fn execute_instruction(instruction: u32, registers: &mut Vec<i64>, flags: &mut HashMap<String, bool>) {
     let executor = executor::Executor;
     println!("instruction: {:032b}", instruction);
     let bcc = (instruction >> 28) & 0b1111;
@@ -14,13 +14,13 @@ fn execute_instruction(instruction: u32, registers: &mut Vec<u64>, flags: &mut H
         let opcode = (instruction >> 20) & 0b1111; // 0xf
         let ope1 = registers[(instruction >> 16 & 0xf) as usize];
         let ivf = (instruction >> 24) & 0b1;
-        let ope2: u64 = if ivf == 1 {
+        let ope2: i64 = if ivf == 1 {
             println!("Immediate Value Present");
             (instruction & 0b11111111).try_into().unwrap()
         } else {
             registers[(instruction >> 12 & 0xf) as usize]
         };
-        let dest: &mut u64 = &mut registers[(instruction >> 8 & 0xf) as usize];
+        let dest: &mut i64 = &mut registers[(instruction >> 8 & 0xf) as usize];
         let carry_flag: &mut bool = flags.get_mut(&String::from("carry")).unwrap();
 
 
@@ -48,7 +48,6 @@ fn execute_instruction(instruction: u32, registers: &mut Vec<u64>, flags: &mut H
         println!("--- BCC ---");
     }
     println!("---------------");
-    // xxd -b -c 4 -g 0 file.bin | cut -d' ' -f2
 }
 
 fn main() {
@@ -59,7 +58,7 @@ fn main() {
     }
 
     // Set registers
-    let mut registers: Vec<u64> = Vec::new();
+    let mut registers: Vec<i64> = Vec::new();
     loading::set_internal_state(args[2].to_string(), &mut registers);
     // for r in registers.iter() {
     //     println!("{r}");

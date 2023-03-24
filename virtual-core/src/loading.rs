@@ -9,14 +9,19 @@ fn read_lines(filename: String) -> io::Lines<BufReader<File>> {
     return io::BufReader::new(file).lines();
 }
 
+fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
+    let z = u64::from_str_radix(raw_str, radix).unwrap();
+    z as i64
+}
+
 // Sets the internal state
-pub fn set_internal_state(filename: String, registers: &mut Vec<u64>) {
+pub fn set_internal_state(filename: String, registers: &mut Vec<i64>) {
     let lines = read_lines(filename);
     for line_or_error in lines {
         let line = line_or_error.unwrap();
         let splitted_line: Vec<&str> = line.split("0x").collect();
         let str_value = splitted_line.get(1).unwrap();
-        let value = u64::from_str_radix(&str_value, 16).unwrap();
+        let value = from_str_radix_u64_to_i64(str_value, 16);
         registers.push(value);
     }
 }
