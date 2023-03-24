@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 
 
 pub struct Executor;
@@ -42,8 +44,14 @@ impl Executor {
         self.safe_add(*dest, ope2, dest, carry);
     }
 
-    pub fn cmp(&self, ope1: i64, ope2: i64, dest: &mut i64) {
+    pub fn cmp(&self, ope1: i64, ope2: i64, flags: &mut HashMap<String, bool>) {
         println!("Je suis le cmp");
+        *flags.get_mut(&String::from("BEQ")).unwrap() = ope1 == ope2;
+        *flags.get_mut(&String::from("BNE")).unwrap() = ope1 != ope2;
+        *flags.get_mut(&String::from("BLE")).unwrap() = ope1 <= ope2;
+        *flags.get_mut(&String::from("BGE")).unwrap() = ope1 >= ope2;
+        *flags.get_mut(&String::from("BL")).unwrap()  = ope1 < ope2;
+        *flags.get_mut(&String::from("BG")).unwrap()  = ope1 > ope2;
     }
 
     fn safe_sub(&self, ope1: i64, ope2: i64, dest: &mut i64, carry: &mut bool) {
