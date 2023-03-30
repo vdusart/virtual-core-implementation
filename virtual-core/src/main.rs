@@ -8,13 +8,13 @@ mod loading;
 
 fn execute_instruction(instruction: u32, registers: &mut Vec<i64>, flags: &mut HashMap<String, bool>) {
     let executor = executor::Executor;
-    println!("instruction: {:032b}", instruction);
-    println!("--- OPCODE ---");
+    //println!("instruction: {:032b}", instruction);
+    //println!("--- OPCODE ---");
     let opcode = (instruction >> 20) & 0b1111; // 0xf
     let ope1 = registers[(instruction >> 16 & 0xf) as usize];
     let ivf = (instruction >> 24) & 0b1;
     let ope2: i64 = if ivf == 1 {
-        println!("Immediate Value Present");
+        //println!("Immediate Value Present");
         (instruction & 0b11111111).try_into().unwrap()
     } else {
         registers[(instruction >> 12 & 0xf) as usize]
@@ -37,14 +37,16 @@ fn execute_instruction(instruction: u32, registers: &mut Vec<i64>, flags: &mut H
         Ok(keywords::OperationCodes::RSH) => executor.rsh(ope1, ope2, dest, carry_flag),
         _ => println!("Unknown opcode"),
     }
-    println!("r1 = {0}", registers[1]);
-    println!("r2 = {0}", registers[2]);
-    println!("r3 = {0}", registers[3]);
-    println!("carry = {0}", flags.get(&String::from("carry")).unwrap());
-    println!("BNE = {0}", flags.get(&String::from("BNE")).unwrap());
+    //println!("r0 = {0}", registers[0]);
+    //println!("r1 = {0}", registers[1]);
+    //println!("r3 = {0}", registers[3]);
+    //println!("r14 = {0}", registers[14]);
+    //println!("r15 = {0}", registers[15]);
+    //println!("carry = {0}", flags.get(&String::from("carry")).unwrap());
+    //println!("BNE = {0}", flags.get(&String::from("BNE")).unwrap());
 
 
-    println!("---------------");
+    //println!("---------------");
 }
 
 fn fetch(instruction: u32, pc: u32, flags: &mut HashMap<String, bool>, is_verbose: bool) -> (bool, u32) {
@@ -65,11 +67,11 @@ fn fetch(instruction: u32, pc: u32, flags: &mut HashMap<String, bool>, is_verbos
     let (new_pc, _) = pc.overflowing_add_signed(offset);
 
     if is_verbose {
-        println!("------- fetch -----");
-        println!("\tBCC: {:02x}", bcc);
-        println!("\toffset: {offset}");
-        println!("\tinstruction: {:032b}", instruction);
-        println!("\tNew PC: {new_pc}");
+        //println!("------- fetch -----");
+        //println!("\tBCC: {:02x}", bcc);
+        //println!("\toffset: {offset}");
+        //println!("\tinstruction: {:032b}", instruction);
+        //println!("\tNew PC: {new_pc}");
     }
 
     return (bcc != 0, new_pc)
@@ -78,7 +80,7 @@ fn fetch(instruction: u32, pc: u32, flags: &mut HashMap<String, bool>, is_verbos
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        println!("Usage: cargo run <CODE> <STATE> (VERBOSE)");
+        //println!("Usage: cargo run <CODE> <STATE> (VERBOSE)");
         process::exit(0);
     }
 
@@ -86,7 +88,7 @@ fn main() {
     let mut registers: Vec<i64> = Vec::new();
     loading::set_internal_state(args[2].to_string(), &mut registers);
     // for r in registers.iter() {
-    //     println!("{r}");
+    //     ////println!("{r}");
     // }
 
     // Set flags
@@ -101,9 +103,9 @@ fn main() {
     let is_verbose: bool = true;
     let instructions_size = instructions.len().try_into().unwrap();
     while pc < instructions_size {
-        println!("\n-------------");
+        //println!("\n-------------");
         let instruction = instructions[pc as usize];
-        println!("Current PC: {pc}");
+        //println!("Current PC: {pc}");
         let (is_bcc, new_pc) = fetch(instruction, pc, &mut flags, is_verbose);
         if !is_bcc {
             // decode
@@ -111,7 +113,7 @@ fn main() {
             execute_instruction(instruction, &mut registers, &mut flags);
         }
         pc = new_pc;
-        println!("-------------\n");
+        //println!("-------------\n");
     }
     for (i, r) in registers.iter().enumerate() {
         println!("r{:#02} = {:#018x}", i, r);
