@@ -1,6 +1,5 @@
 use std::collections::HashMap;
-
-
+use std::cmp::min;
 
 pub struct Executor;
 
@@ -22,15 +21,11 @@ impl Executor {
     }
 
     fn safe_add(&self, ope1: i64, ope2: i64, dest: &mut i64, carry: &mut bool) {
-        let res: i64 = ope1.wrapping_add(ope2);
-        if ope2.leading_zeros() < ope1.leading_ones() {
-            //println!("Je set la carry");
-            *dest = ope1.wrapping_add(ope2);
-            *carry = true;
-        } else {
-            *dest = res;
-            *carry = false;
-        }
+        *dest = ope1.wrapping_add(ope2);
+        *carry = (ope1.is_negative() && ope2.is_negative()) || min(ope1.leading_zeros(), ope2.leading_zeros()) < dest.leading_zeros();
+        // if *carry {
+        //     println!("Je set la carry");
+        // }
     }
 
     pub fn add(&self, ope1: i64, ope2: i64, dest: &mut i64, carry: &mut bool) {

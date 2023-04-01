@@ -37,11 +37,13 @@ fn execute_instruction(instruction: u32, registers: &mut Vec<i64>, flags: &mut H
         Ok(keywords::OperationCodes::RSH) => executor.rsh(ope1, ope2, dest, carry_flag),
         _ => println!("Unknown opcode"),
     }
-    //println!("r0 = {0}", registers[0]);
-    //println!("r1 = {0}", registers[1]);
-    //println!("r3 = {0}", registers[3]);
-    //println!("r14 = {0}", registers[14]);
-    //println!("r15 = {0}", registers[15]);
+    //println!("r0  = {:#018x}", registers[0]);
+    //println!("r1  = {:#018x}", registers[1]);
+    //println!("r2  = {:#018x}", registers[2]);
+    //println!("r3  = {:#018x}", registers[3]);
+    //println!("r13 = {:#018x}", registers[13]);
+    //println!("r14 = {:#018x}", registers[14]);
+    //println!("r15 = {:#018x}", registers[15]);
     //println!("carry = {0}", flags.get(&String::from("carry")).unwrap());
     //println!("BNE = {0}", flags.get(&String::from("BNE")).unwrap());
 
