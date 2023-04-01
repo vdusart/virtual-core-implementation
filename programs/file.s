@@ -1,8 +1,5 @@
-B 3
-ADD r3, r3, r0
-SUB r1, r1, 1
-CMP r1, 0
-BNE -3
+ADD r14, r14, r3
+ADC r13, r13, r2
 ; MOV r2, 0
 ; ADD r2, r2, 18
 ; ADD r3, r2, 22
