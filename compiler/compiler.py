@@ -40,11 +40,12 @@ if __name__ == '__main__':
     # Read the assembly file line by line and encode each instruction
     instructions = []
     for line in lines:
-        instruction = line.strip().replace(',', '').split(' ')
+        line = line.strip()
+        if line == '' or line.startswith(';'):  # Ignore comments and empty lines
+            continue
+        instruction = line.replace(',', '').split(' ')
         instruction[0] = instruction[0].upper()
         match instruction[0]:
-            case x if str(x).startswith(';'):  # Allow comments
-                continue
             case x if x in OPERATION_CODES:
                 encoded_instruction = encode_operation(instruction)
             case x if x in BRANCHING_CODES:
