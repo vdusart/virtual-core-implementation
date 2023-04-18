@@ -50,8 +50,7 @@ if __name__ == '__main__':
                 case x if x in BRANCHING_CODES:
                     encoded_instruction = encode_branching(instruction)
                 case _:
-                    print(f'{LoggingMessages.ERROR} Unknown operation on line {index}: {instruction[0]}')
-                    sys.exit(-1)
+                    raise Exception(f'Unknown operation [{instruction[0]}].')
         except Exception as e:
             print(f'{LoggingMessages.ERROR} On line {index}: {e.args[0]}')
             sys.exit(-1)
