@@ -41,6 +41,7 @@ if __name__ == '__main__':
     instructions = []
     for line in lines:
         instruction = line.strip().replace(',', '').split(' ')
+        instruction[0] = instruction[0].upper()
         match instruction[0]:
             case x if str(x).startswith(';'):  # Allow comments
                 continue
