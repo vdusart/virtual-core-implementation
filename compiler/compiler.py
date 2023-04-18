@@ -44,6 +44,7 @@ if __name__ == '__main__':
         if line == '' or line.startswith(';'):  # Ignore comments and empty lines
             continue
         instruction = line.replace(',', '').split(' ')
+        instruction[0] = instruction[0].upper()
         match instruction[0]:
             case x if x in OPERATION_CODES:
                 encoded_instruction = encode_operation(instruction)
