@@ -1,3 +1,7 @@
+CMP r0, 0
+BNE 3
+MOV r3, 1
+B 26
 MOV r3, r0
 MOV r2, 0
 SUB r0, r0, 1
