@@ -3,7 +3,7 @@ from keywords import OPERATION_CODES, BRANCHING_CODES
 
 def check_register_validity(register, position):
     if register[0] != 'r' or int(register[1:]) >= 16:
-        raise SyntaxError(f'The {position} needs to be a register ri with i in [0;15]: {register}')
+        raise Exception(f'Unknown {position} [{register}]. Must be a register ri with i in [0;15].')
 
 
 def int_to_bit_array(number, padding=4):
