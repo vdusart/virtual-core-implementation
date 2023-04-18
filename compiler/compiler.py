@@ -1,7 +1,7 @@
 import sys
 
-from keywords import OPERATION_CODES, BRANCHING_CODES
 from encoders import encode_operation, encode_branching
+from keywords import OPERATION_CODES, BRANCHING_CODES
 
 
 class Colours:
@@ -39,17 +39,22 @@ if __name__ == '__main__':
 
     # Read the assembly file line by line and encode each instruction
     instructions = []
-    for line in lines:
+    for index, line in enumerate(lines, start=1):
         instruction = line.strip().replace(',', '').split(' ')
-        match instruction[0]:
-            case x if str(x).startswith(';'):  # Allow comments
-                continue
-            case x if x in OPERATION_CODES:
-                encoded_instruction = encode_operation(instruction)
-            case x if x in BRANCHING_CODES:
-                encoded_instruction = encode_branching(instruction)
-            case _:
-                raise Exception(f'{LoggingMessages.ERROR} Unknown operation: {line}')
+        try:
+            match instruction[0]:
+                case x if str(x).startswith(';'):  # Allow comments
+                    continue
+                case x if x in OPERATION_CODES:
+                    encoded_instruction = encode_operation(instruction)
+                case x if x in BRANCHING_CODES:
+                    encoded_instruction = encode_branching(instruction)
+                case _:
+                    print(f'{LoggingMessages.ERROR} Unknown operation on line {index}: {instruction[0]}')
+                    sys.exit(-1)
+        except Exception as e:
+            print(f'{LoggingMessages.ERROR} On line {index}: {e.args[0]}')
+            sys.exit(-1)
         instructions += encoded_instruction[::-1]  # Reverse order to match big endianness
 
     # Write binary file
