@@ -41,7 +41,7 @@ if __name__ == '__main__':
     instructions = []
     for line in lines:
         line = line.strip()
-        if line == '' or line.startswith(';'):  # Allow comments and empty lines
+        if line == '' or line.startswith(';'):  # Ignore comments and empty lines
             continue
         instruction = line.replace(',', '').split(' ')
         match instruction[0]:
