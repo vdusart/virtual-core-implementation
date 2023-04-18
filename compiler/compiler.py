@@ -44,6 +44,8 @@ if __name__ == '__main__':
         match instruction[0]:
             case x if str(x).startswith(';'):  # Allow comments
                 continue
+            case x if str(x) == '':  # Allow empty lines
+                continue
             case x if x in OPERATION_CODES:
                 encoded_instruction = encode_operation(instruction)
             case x if x in BRANCHING_CODES:
