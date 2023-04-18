@@ -38,7 +38,10 @@ def encode_operation(instruction):
     # Encode second operand or immediate value
     current_index += 1
     if encoding[24] == '1':
-        encoding[0:8] = int_to_bit_array(int(instruction[current_index]), 8)
+        immediate_value = int(instruction[current_index])
+        if immediate_value < 0 or immediate_value > 255:
+            raise Exception(f'Wrong Immediate Value [{immediate_value}]. Must be in the range [0;255].')
+        encoding[0:8] = int_to_bit_array(immediate_value, 8)
     else:
         check_register_validity(instruction[current_index], 'second operand')
         encoding[12:16] = int_to_bit_array(int(instruction[current_index][1:]))
