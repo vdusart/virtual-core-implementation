@@ -5,6 +5,7 @@ use keywords::BranchingCodes;
 mod executor;
 mod keywords;
 mod loading;
+mod logger;
 
 fn execute_instruction(instruction: u32, registers: &mut Vec<i64>, flags: &mut HashMap<String, bool>) {
     let executor = executor::Executor;

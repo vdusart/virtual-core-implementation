@@ -1,8 +1,10 @@
+use std::fmt::format;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Read};
 use std::collections::HashMap;
 
 use crate::keywords::BranchingCodes;
+use crate::logger::Logger;
 
 fn read_lines(filename: String) -> io::Lines<BufReader<File>> {
     let file = File::open(filename).unwrap();
@@ -10,8 +12,16 @@ fn read_lines(filename: String) -> io::Lines<BufReader<File>> {
 }
 
 fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
-    let z = u64::from_str_radix(raw_str, radix).unwrap();
-    z as i64
+    let mut value = 0;
+    match u64::from_str_radix(raw_str, radix) {
+        Ok(z) => value = z,
+        Err(e) => {
+            let mut error_msg = String::from("Invalid intial register state:\n");
+            error_msg.push_str(&format!("{}: '0x{}'", &e.to_string(), raw_str));
+            Logger::error(error_msg)
+        }
+    };
+    value as i64
 }
 
 // Sets the internal state
@@ -19,7 +29,11 @@ pub fn set_internal_state(filename: String, registers: &mut Vec<i64>) {
     let lines = read_lines(filename);
     for line_or_error in lines {
         let line = line_or_error.unwrap();
-        let splitted_line: Vec<&str> = line.split("0x").collect();
+        let splitted_line: Vec<&str> = line.split("=0x").collect();
+        if splitted_line.len() != 2 {
+            let error_msg = format!("Internal state file is malformed.\nline:\n\t'{}'", line);
+            Logger::error(error_msg);
+        }
         let str_value = splitted_line.get(1).unwrap();
         let value = from_str_radix_u64_to_i64(str_value, 16);
         registers.push(value);
