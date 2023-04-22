@@ -7,7 +7,7 @@ mod keywords;
 mod loading;
 mod logger;
 
-fn execute_instruction(instruction: u32, registers: &mut Vec<i64>, flags: &mut HashMap<String, bool>) {
+fn execute_instruction(instruction: u32, registers: &mut [i64; 16], flags: &mut HashMap<String, bool>) {
     let executor = executor::Executor;
     //println!("instruction: {:032b}", instruction);
     //println!("--- OPCODE ---");
@@ -88,7 +88,7 @@ fn main() {
     }
 
     // Set registers
-    let mut registers: Vec<i64> = Vec::new();
+    let mut registers: [i64; 16] = [0; 16];
     loading::set_internal_state(args[2].to_string(), &mut registers);
     // for r in registers.iter() {
     //     ////println!("{r}");

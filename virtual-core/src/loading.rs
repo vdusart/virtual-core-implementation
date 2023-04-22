@@ -1,4 +1,3 @@
-use std::fmt::format;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Read};
 use std::collections::HashMap;
@@ -17,7 +16,8 @@ fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
         Ok(z) => value = z,
         Err(e) => {
             let mut error_msg = String::from("Invalid intial register state:\n");
-            error_msg.push_str(&format!("{}: '0x{}'", &e.to_string(), raw_str));
+            let prefix = if radix == 10 { "" } else { "0x" };
+            error_msg.push_str(&format!("{}: '{}{}'", &e.to_string(), prefix, raw_str));
             Logger::error(error_msg)
         }
     };
@@ -25,7 +25,7 @@ fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
 }
 
 // Sets the internal state
-pub fn set_internal_state(filename: String, registers: &mut Vec<i64>) {
+pub fn set_internal_state(filename: String, registers: &mut [i64; 16]) {
     let lines = read_lines(filename);
     for line_or_error in lines {
         let line = line_or_error.unwrap();
@@ -34,9 +34,25 @@ pub fn set_internal_state(filename: String, registers: &mut Vec<i64>) {
             let error_msg = format!("Internal state file is malformed.\nline:\n\t'{}'", line);
             Logger::error(error_msg);
         }
+
+        let str_index = splitted_line.get(0).unwrap();
+        if str_index.len() < 2 || !str_index.starts_with('r') {
+            let error_msg = format!("Internal state file is malformed.\nline: '{}'.", line);
+            Logger::error(error_msg);
+        }
+        let index = from_str_radix_u64_to_i64(&str_index[1..str_index.len()], 10);
+        if index < 0 || index > 15 {
+            let error_msg = format!("Internal state file is malformed.\nline: '{}'\nri with i ∈ [0;15].", line);
+            Logger::error(error_msg);
+        }
+
+        if index < 0 || index > 15 {
+            Logger::error(String::from("Invalid register range"));
+        }
+
         let str_value = splitted_line.get(1).unwrap();
         let value = from_str_radix_u64_to_i64(str_value, 16);
-        registers.push(value);
+        registers[index as usize] = value;
     }
 }
 
