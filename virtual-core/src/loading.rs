@@ -26,22 +26,23 @@ fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
 // Sets the internal state
 pub fn set_internal_state(filename: String, registers: &mut [i64; 16]) {
     let lines = read_lines(filename);
+    let error_prefix = "Invalid syntax in internal state:";
     for line_or_error in lines {
         let line = line_or_error.unwrap();
         let splitted_line: Vec<&str> = line.split("=0x").collect();
         if splitted_line.len() != 2 {
-            let error_msg = format!("Internal state file is malformed.\nline: '{}'", line);
+            let error_msg = format!("{} '{}'", error_prefix, line);
             Logger::error(&error_msg);
         }
 
         let str_index = splitted_line.get(0).unwrap();
         if str_index.len() < 2 || !str_index.starts_with('r') {
-            let error_msg = format!("Internal state file is malformed.\nline: '{}'.", line);
+            let error_msg = format!("{} '{}'", error_prefix, line);
             Logger::error(&error_msg);
         }
         let index = from_str_radix_u64_to_i64(&str_index[1..str_index.len()], 10);
         if index < 0 || index > 15 {
-            let error_msg = format!("Internal state file is malformed.\nline: '{}'\nri with i ∈ [0;15].", line);
+            let error_msg = format!("{} '{}'. Registers can only be in range [0;15].", error_prefix, line);
             Logger::error(&error_msg);
         }
 

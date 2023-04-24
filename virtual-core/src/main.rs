@@ -84,7 +84,7 @@ fn fetch(instruction: u32, pc: u32, flags: &mut HashMap<String, bool>, is_verbos
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        Logger::error("Usage: cargo run <CODE> <STATE> (VERBOSE)");
+        Logger::error("Usage: cargo run [BINARY FILE] [INITIAL STATE FILE] (--verbose)");
         process::exit(0);
     }
 
