@@ -1,6 +1,7 @@
 use std::{env, process, collections::HashMap};
 
 use keywords::BranchingCodes;
+use logger::Logger;
 
 mod executor;
 mod keywords;
@@ -83,7 +84,7 @@ fn fetch(instruction: u32, pc: u32, flags: &mut HashMap<String, bool>, is_verbos
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        //println!("Usage: cargo run <CODE> <STATE> (VERBOSE)");
+        Logger::error("Usage: cargo run <CODE> <STATE> (VERBOSE)");
         process::exit(0);
     }
 

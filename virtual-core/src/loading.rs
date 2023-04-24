@@ -15,10 +15,9 @@ fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
     match u64::from_str_radix(raw_str, radix) {
         Ok(z) => value = z,
         Err(e) => {
-            let mut error_msg = String::from("Invalid intial register state:\n");
             let prefix = if radix == 10 { "" } else { "0x" };
-            error_msg.push_str(&format!("{}: '{}{}'", &e.to_string(), prefix, raw_str));
-            Logger::error(error_msg)
+            let error_msg = &format!("Invalid initial register state:\n{}: '{}{}'", &e.to_string(), prefix, raw_str);
+            Logger::error(&error_msg)
         }
     };
     value as i64
@@ -31,23 +30,19 @@ pub fn set_internal_state(filename: String, registers: &mut [i64; 16]) {
         let line = line_or_error.unwrap();
         let splitted_line: Vec<&str> = line.split("=0x").collect();
         if splitted_line.len() != 2 {
-            let error_msg = format!("Internal state file is malformed.\nline:\n\t'{}'", line);
-            Logger::error(error_msg);
+            let error_msg = format!("Internal state file is malformed.\nline: '{}'", line);
+            Logger::error(&error_msg);
         }
 
         let str_index = splitted_line.get(0).unwrap();
         if str_index.len() < 2 || !str_index.starts_with('r') {
             let error_msg = format!("Internal state file is malformed.\nline: '{}'.", line);
-            Logger::error(error_msg);
+            Logger::error(&error_msg);
         }
         let index = from_str_radix_u64_to_i64(&str_index[1..str_index.len()], 10);
         if index < 0 || index > 15 {
             let error_msg = format!("Internal state file is malformed.\nline: '{}'\nri with i ∈ [0;15].", line);
-            Logger::error(error_msg);
-        }
-
-        if index < 0 || index > 15 {
-            Logger::error(String::from("Invalid register range"));
+            Logger::error(&error_msg);
         }
 
         let str_value = splitted_line.get(1).unwrap();
