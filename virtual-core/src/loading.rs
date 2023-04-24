@@ -1,9 +1,7 @@
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Read};
-use std::collections::HashMap;
 
-use crate::keywords::BranchingCodes;
-use crate::logger::Logger;
+use crate::keywords::Flags;
 
 fn read_lines(filename: String) -> io::Lines<BufReader<File>> {
     let file = File::open(filename).unwrap();
@@ -17,7 +15,7 @@ fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
         Err(e) => {
             let prefix = if radix == 10 { "" } else { "0x" };
             let error_msg = &format!("Invalid initial register state.\n{}: '{}{}'", &e.to_string(), prefix, raw_str);
-            Logger::error(&error_msg)
+            log::error!("{}", &error_msg)
         }
     };
     value as i64
@@ -32,18 +30,18 @@ pub fn set_internal_state(filename: String, registers: &mut [i64; 16]) {
         let splitted_line: Vec<&str> = line.split("=0x").collect();
         if splitted_line.len() != 2 {
             let error_msg = format!("{} '{}'", error_prefix, line);
-            Logger::error(&error_msg);
+            log::error!("{}", &error_msg);
         }
 
         let str_index = splitted_line.get(0).unwrap();
         if str_index.len() < 2 || !str_index.starts_with('r') {
             let error_msg = format!("{} '{}'", error_prefix, line);
-            Logger::error(&error_msg);
+            log::error!("{}", &error_msg);
         }
         let index = from_str_radix_u64_to_i64(&str_index[1..str_index.len()], 10);
         if index < 0 || index > 15 {
             let error_msg = format!("{} '{}'. Registers can only be in range [0;15].", error_prefix, line);
-            Logger::error(&error_msg);
+            log::error!("{}", &error_msg);
         }
 
         let str_value = splitted_line.get(1).unwrap();
@@ -69,14 +67,14 @@ pub fn load_binary_file(filename: String, instructions: &mut Vec<u32>) {
     }
 }
 
-pub fn init_flags() -> HashMap<String, bool> {
-    let mut flags: HashMap<String, bool> = HashMap::new();
-    flags.insert(BranchingCodes::BEQ.to_string(), false);
-    flags.insert(BranchingCodes::BNE.to_string(), false);
-    flags.insert(BranchingCodes::BLE.to_string(), false);
-    flags.insert(BranchingCodes::BGE.to_string(), false);
-    flags.insert(BranchingCodes::BG.to_string(), false);
-    flags.insert(BranchingCodes::BL.to_string(), false);
-    flags.insert(String::from("carry"), false);
-    flags
+pub fn init_flags() -> Flags {
+    Flags {
+        beq: false,
+        bne: false,
+        ble: false,
+        bge: false,
+        bl: false,
+        bg: false,
+        carry: false,
+    }
 }

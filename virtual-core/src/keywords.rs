@@ -11,7 +11,7 @@ pub enum OperationCodes {
     SBC = 0x7,
     MOV = 0x8,
     LSH = 0x9,
-    RSH = 0xa
+    RSH = 0xa,
 }
 
 impl TryFrom<u32> for OperationCodes {
@@ -35,16 +35,33 @@ impl TryFrom<u32> for OperationCodes {
     }
 }
 
+impl fmt::Display for OperationCodes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            OperationCodes::AND => write!(f, "AND"),
+            OperationCodes::ORR => write!(f, "ORR"),
+            OperationCodes::EOR => write!(f, "EOR"),
+            OperationCodes::ADD => write!(f, "ADD"),
+            OperationCodes::ADC => write!(f, "ADC"),
+            OperationCodes::CMP => write!(f, "CMP"),
+            OperationCodes::SUB => write!(f, "SUB"),
+            OperationCodes::SBC => write!(f, "SBC"),
+            OperationCodes::MOV => write!(f, "MOV"),
+            OperationCodes::LSH => write!(f, "LSH"),
+            OperationCodes::RSH => write!(f, "RSH"),
+        }
+    }
+}
+
 pub enum BranchingCodes {
-    B   = 0x8,
+    B = 0x8,
     BEQ = 0x9,
     BNE = 0xa,
     BLE = 0xb,
     BGE = 0xc,
-    BL  = 0xd,
-    BG  = 0xe
+    BL = 0xd,
+    BG = 0xe,
 }
-
 
 impl TryFrom<u32> for BranchingCodes {
     type Error = ();
@@ -74,5 +91,41 @@ impl fmt::Display for BranchingCodes {
             BranchingCodes::BL => write!(f, "BL"),
             BranchingCodes::BG => write!(f, "BG"),
         }
+    }
+}
+
+pub struct Flags {
+    pub beq: bool,
+    pub bne: bool,
+    pub ble: bool,
+    pub bge: bool,
+    pub bl: bool,
+    pub bg: bool,
+    pub carry: bool,
+}
+
+impl Flags {
+    pub fn get_from_bcc(&self, bcc: BranchingCodes) -> bool {
+        match bcc {
+            BranchingCodes::BEQ => self.beq,
+            BranchingCodes::BNE => self.bne,
+            BranchingCodes::BLE => self.ble,
+            BranchingCodes::BGE => self.bge,
+            BranchingCodes::BL => self.bl,
+            BranchingCodes::BG => self.bg,
+            _ => false
+        }
+    }
+
+    pub fn current_flag_states(&self) -> String {
+        let mut states = String::from("Current flag states.\n");
+        states.push_str(&format!("BEQ   = {}\n", self.beq));
+        states.push_str(&format!("BNE   = {}\n", self.bne));
+        states.push_str(&format!("BLE   = {}\n", self.ble));
+        states.push_str(&format!("BGE   = {}\n", self.bge));
+        states.push_str(&format!("BL    = {}\n", self.bl));
+        states.push_str(&format!("BG    = {}\n", self.bg));
+        states.push_str(&format!("CARRY = {}", self.carry));
+        states
     }
 }
