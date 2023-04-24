@@ -18,7 +18,7 @@ The compiler can be found under `compiler/compiler.py`. To use it, simply: `pyth
 
 ### Using the virtual core
 - Compiling the core: `cargo build --release`
-- Running the core: `cargo run --release [INPUT CODE] [INITIAL STATE FILE] (optional: verbose)`
+- Running the core: `cargo run --release [INPUT CODE] [INITIAL STATE FILE] (optional: --verbose)`
 
 ## Explanation of the tested programs
 
@@ -36,7 +36,7 @@ Addition, subtraction and bit-shifting operations create carries.
 
 > What is the purpose of the add carry (ADC) instruction?
 
-The add carry instruction allows the addition of numbers that are greater than 64 bits in length.
+The add carry instruction adds its two operands and also adds 1 if the carry flag is set. This allows operations on numbers that are greater than 64 bits in length.
 
 > What are the checks to realise during a branch instruction?
 
