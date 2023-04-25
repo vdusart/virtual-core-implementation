@@ -113,7 +113,7 @@ impl Flags {
             BranchingCodes::BGE => self.bge,
             BranchingCodes::BL => self.bl,
             BranchingCodes::BG => self.bg,
-            _ => false
+            _ => false,
         }
     }
 

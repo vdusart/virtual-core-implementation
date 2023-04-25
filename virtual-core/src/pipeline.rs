@@ -52,20 +52,34 @@ pub fn decode(instruction: u32, registers: &mut [i64; 16]) -> DecodedInstruction
     if log::max_level() == log::LevelFilter::Info {
         let opcode_entity: OperationCodes = opcode.try_into().unwrap();
         let mut decode_infos = String::from("-> DECODE\n");
-        decode_infos.push_str(&format!("\tOPCODE: {:02x} ({})\n", opcode, opcode_entity.to_string()));
+        decode_infos.push_str(&format!(
+            "\tOPCODE: {:02x} ({})\n",
+            opcode,
+            opcode_entity.to_string()
+        ));
         decode_infos.push_str(&format!("\tope1: {:#018x}\n", ope1));
         decode_infos.push_str(&format!("\tIVF: {}\n", ivf));
         decode_infos.push_str(&format!("\tope2: {:#018x}", ope2));
         log::info!("{}", decode_infos);
     }
 
-    DecodedInstruction { opcode, ope1, ope2, dest }
+    DecodedInstruction {
+        opcode,
+        ope1,
+        ope2,
+        dest,
+    }
 }
 
 pub fn execute(instruction: DecodedInstruction, flags: &mut Flags) {
-    let DecodedInstruction {opcode, ope1, ope2, dest} = instruction;
+    let DecodedInstruction {
+        opcode,
+        ope1,
+        ope2,
+        dest,
+    } = instruction;
     let executor = executor::Executor;
-    
+
     let carry_flag: &mut bool = &mut flags.carry;
 
     match opcode.try_into() {

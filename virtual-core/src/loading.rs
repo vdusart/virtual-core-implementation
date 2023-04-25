@@ -14,7 +14,12 @@ fn from_str_radix_u64_to_i64(raw_str: &str, radix: u32) -> i64 {
         Ok(z) => value = z,
         Err(e) => {
             let prefix = if radix == 10 { "" } else { "0x" };
-            let error_msg = &format!("Invalid initial register state.\n{}: '{}{}'", &e.to_string(), prefix, raw_str);
+            let error_msg = &format!(
+                "Invalid initial register state.\n{}: '{}{}'",
+                &e.to_string(),
+                prefix,
+                raw_str
+            );
             log::error!("{}", &error_msg)
         }
     };
@@ -40,7 +45,10 @@ pub fn set_internal_state(filename: String, registers: &mut [i64; 16]) {
         }
         let index = from_str_radix_u64_to_i64(&str_index[1..str_index.len()], 10);
         if index < 0 || index > 15 {
-            let error_msg = format!("{} '{}'. Registers can only be in range [0;15].", error_prefix, line);
+            let error_msg = format!(
+                "{} '{}'. Registers can only be in range [0;15].",
+                error_prefix, line
+            );
             log::error!("{}", &error_msg);
         }
 
