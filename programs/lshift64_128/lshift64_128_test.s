@@ -1,3 +1,4 @@
+MOV r2, 0
 MOV r3, r0
 B 5
 LSH r2, r2, 1
