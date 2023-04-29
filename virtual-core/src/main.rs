@@ -1,29 +1,39 @@
+use colog;
 use std::{env, process};
 
 mod executor;
 mod keywords;
 mod loading;
-mod logger;
 mod pipeline;
+
+pub fn current_register_states(registers: &[i64; 16]) -> String {
+    let mut states = String::from("Current register states.");
+    for (i, r) in registers.iter().enumerate() {
+        states = format!("{}\nr{:#02} = {:#018x}", states, i, r);
+    }
+    states
+}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    let mut clog = colog::builder();
+    clog.filter(None, log::LevelFilter::Error);
+
     if args.len() < 3 {
-        logger::Logger::init(log::LevelFilter::Error);
+        clog.init();
         log::error!("Usage: cargo run [BINARY FILE] [INITIAL STATE FILE] (--verbose)");
         process::exit(0);
     }
 
     if args.len() > 3 && args[3] == "--verbose" {
-        logger::Logger::init(log::LevelFilter::Info);
-    } else {
-        logger::Logger::init(log::LevelFilter::Error);
+        clog.filter(None, log::LevelFilter::Info);
     }
+    clog.init();
 
     // Set registers
     let mut registers: [i64; 16] = [0; 16];
     loading::set_internal_state(args[2].to_string(), &mut registers);
-    log::info!("{}", logger::current_register_states(&registers));
+    log::info!("{}", current_register_states(&registers));
 
     // Set flags
     let mut flags = loading::init_flags();
@@ -51,7 +61,7 @@ fn main() {
 
             if log::max_level() == log::LevelFilter::Info {
                 let mut execute_infos = String::from("-> EXECUTE\n");
-                execute_infos.push_str(&logger::current_register_states(&registers));
+                execute_infos.push_str(&current_register_states(&registers));
                 execute_infos.push_str("\n\n");
                 execute_infos.push_str(&flags.current_flag_states());
                 log::info!("{}", execute_infos);
@@ -60,5 +70,5 @@ fn main() {
         pc = new_pc;
     }
     log::info!("Final register states");
-    println!("{}", logger::current_register_states(&registers));
+    println!("{}", current_register_states(&registers));
 }
