@@ -1,19 +1,19 @@
 ; Set register 0 to 0x0123456789abcdef
-ADD r0, r0, 1   ; 01
+ADD r0, r0, 1
 LSH r0, r0, 8
-ADD r0, r0, 35  ; 23
+ADD r0, r0, 35
 LSH r0, r0, 8
-ADD r0, r0, 69  ; 45
+ADD r0, r0, 69
 LSH r0, r0, 8
-ADD r0, r0, 103 ; 67
+ADD r0, r0, 103
 LSH r0, r0, 8
-ADD r0, r0, 137 ; 89
+ADD r0, r0, 137
 LSH r0, r0, 8
-ADD r0, r0, 171 ; ab
+ADD r0, r0, 171
 LSH r0, r0, 8
-ADD r0, r0, 205 ; cd
+ADD r0, r0, 205
 LSH r0, r0, 8
-ADD r0, r0, 239 ; ef
+ADD r0, r0, 239
 ; Set register 1 to 0xa5a5a5a5a5a5a5a5
 ADD r1, r1, 165
 LSH r1, r1, 8
