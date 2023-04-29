@@ -1,12 +1,24 @@
 # Virtual core implementation - Report
-
 Group members:
 - Lucas DRAESCHER
 - Victor DUSART
 
 ## Explanation of the implementation
+We chose a combination of Python and Rust for this project. The compiler is written in Python because it is essentially just array manipulation and Python's powerful list manipulation allowed us to get the compiler done in just a few hours. The core had to be written in a compiled language, per the subjects requirements. We both wanted to learn Rust, so we decided to write the core with it.
 
-TODO
+The compiler is divided into 3 files:
+- `compiler.py` is the main entrypoint to the program. It does error handling and printing.
+- `encoders.py` defines how operations and branching codes are encoded.
+- `keywords.py` defines the programs keywords as objects.
+
+The core is divided into 5 files:
+- `executor.rs` implements all the operators.
+- `keywords.rs` defines the operation codes, branching codes and flags along with utility functions for each type.
+- `loading.rs` defines functions for reading the input files.
+- `main.rs` is the main entrypoint to the program.
+- `pipeline.rs` contains the `fetch`, `decode` and `execute` functions.
+
+For implementation details, the important functions have comments explaining how they work.
 
 ## How to use
 
@@ -21,11 +33,35 @@ The compiler can be found under `compiler/compiler.py`. To use it, simply: `pyth
 - Running the core: `cargo run --release [INPUT CODE] [INITIAL STATE FILE] (optional: --verbose)`
 
 ## Explanation of the tested programs
-
-TODO
+1) init
+   - we start by inserting the value we want in decimal base (1 = 0x01)
+   - we then left shift by two hexadecimal digits (8 bits)
+   - we add the next value in decimal base (35 = 0x23)
+   - rinse and repeat...
+   - a similar algorithm is used for r1 and r2, only by adding different values depending on the output we wish to have
+2) 128 bits addition
+   - we add the lower 64 bits together into r6
+   - we then add the higher 64 bits together into r5 by taking into account an eventual carry from the previous addition
+3) 64 to 128 bits left shift
+   - r2 contains the higher 64 bits of the shift (initialise it to 0)
+   - r3 contains the lower 64 bits of the shift (initialise it to r0)
+   - branch to the final comparison (exit if r1 = 0, loop otherwise)
+   - left shift r2 by 1
+   - left shift r3 by 1
+   - if the previous operation overflowed, catch the overflow and add it to r2 (this step is what creates the "transfer" to the second register)
+   - decrement r1
+   - we loop over until r1 is equal to zero (r1 = number of bits to shift by)
+   1) bonus: 128 bits left shift. It is the exact same program with some minor differences:
+      - r0 and r1 contain the initial value (high bits = r0, low bits = r1)
+      - r2 contains the number of bits to shift by
+      - r3 contains the higher 64 bits (initialise it to r0)
+      - r4 contains the lower 64 bits (initialise it to r1)
+4) 64 bits multiplication
+5) 64 to 128 bits factorial
+6) from C code
+   - comments related to this function are embedded within the assembly code
 
 ## Answers to the questions
-
 > Which parts of a 64-bit processor are 64 bits wide?
 
 In a 64-bit processor, the registers are 64 bits wide.
