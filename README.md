@@ -23,7 +23,7 @@ For implementation details, the important functions have comments explaining how
 ## How to use
 
 ### Requirements
-To use the project, Python (>= 3.10) and Rust (with cargo) are required.
+To use the project, Python (>= 3.10) and Rust (>= 1.67.0) (with cargo) are required.
 
 ### Using the compiler
 The compiler can be found under `compiler/compiler.py`. To use it, simply: `python3 compiler.py [INPUT FILE]`.
@@ -57,7 +57,47 @@ The compiler can be found under `compiler/compiler.py`. To use it, simply: `pyth
       - r3 contains the higher 64 bits (initialise it to r0)
       - r4 contains the lower 64 bits (initialise it to r1)
 4) 64 bits multiplication
+   1) Slow way
+      - a * b is the same as (a + ... + a) b times
+      - the slow way is doing b addition of the a number
+      - r1 contains the b value
+      - r3 contains the bottom 64 bits part of the result
+      - r2 contains the top 64 bits part of the result
+      - the result of the product is stored in [r2][r3]
+   2) Fast way
+      - *doing a 1 bit left shift on a number is the same as multiplying it by 2*
+      - *a 1 bit right shift on a number is division by 2*
+      - instead of doing successive additions, we can make multiplication by 2 of the result, which is in fact a 1 bit left shift and a division by 2 of the multiplier (1 bit right shift)
+      - eg: x * 8 = (x + x + x + x) * 4 = 2x * 4
+      - with this technique, we can save a lot of operation
+      - it works well as long as you want to multiply by a number divisible by 2.
+      When the number is no longer divisible by 2, you have to use another register to do a multiplication and an addition
+      - to better understand the processus, let's see a simple example:
+         - 5 * 14
+         - 5 * 2 * 7
+         - 10 * 7
+         - 10 * 6 + 10
+         - 10 * 2 * 3 + 10
+         - 20 * 3 + 10
+         - 20 * 2 + 20 + 10
+         - 40 + 30
+         - 70
+
 5) 64 to 128 bits factorial
+   - for the factorial, we use exactly the same concept but we decompose it in sucessive multiplication to build our result
+   - example:
+      - 5!
+      - 5 * 4!
+      - 5 * 4 * 3!
+      - 5 * 2 * 2 * 3!
+      - 10 * 2 * 3!
+      - 20 * 3!
+      - 20 * 3 * 2!
+      - (20 * 2 + 20) * 2!
+      - (40 + 20) * 2!
+      - 60 * 2!
+      - 60 * 2
+      - 120
 6) from C code
    - comments related to this function are embedded within the assembly code
 
