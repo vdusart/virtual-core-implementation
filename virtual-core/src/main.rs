@@ -6,6 +6,8 @@ mod keywords;
 mod loading;
 mod pipeline;
 
+// Returns a string containing the current state of the registers
+// (Only for the verbose mode)
 pub fn current_register_states(registers: &[i64; 16]) -> String {
     let mut states = String::from("Current register states.");
     for (i, r) in registers.iter().enumerate() {
@@ -25,6 +27,7 @@ fn main() {
         process::exit(0);
     }
 
+    // Setting the log level to Info, if the user chooses the verbose mode
     if args.len() > 3 && args[3] == "--verbose" {
         clog.filter(None, log::LevelFilter::Info);
     }

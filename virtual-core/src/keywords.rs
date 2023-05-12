@@ -1,5 +1,6 @@
 use core::fmt;
 
+// All possible operation codes
 pub enum OperationCodes {
     AND = 0x0,
     ORR = 0x1,
@@ -17,6 +18,7 @@ pub enum OperationCodes {
 impl TryFrom<u32> for OperationCodes {
     type Error = ();
 
+    // Converts a u32 into an OperationCodes
     fn try_from(v: u32) -> Result<Self, Self::Error> {
         match v {
             x if x == OperationCodes::AND as u32 => Ok(OperationCodes::AND),
@@ -36,6 +38,8 @@ impl TryFrom<u32> for OperationCodes {
 }
 
 impl fmt::Display for OperationCodes {
+    // This function allows to display an OperationCodes
+    // (Only used for the verbose mode)
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             OperationCodes::AND => write!(f, "AND"),
@@ -53,6 +57,7 @@ impl fmt::Display for OperationCodes {
     }
 }
 
+// All possible branching codes
 pub enum BranchingCodes {
     B = 0x8,
     BEQ = 0x9,
@@ -65,7 +70,8 @@ pub enum BranchingCodes {
 
 impl TryFrom<u32> for BranchingCodes {
     type Error = ();
-
+    
+    // Converts a u32 into a BranchingCodes
     fn try_from(v: u32) -> Result<Self, Self::Error> {
         match v {
             x if x == BranchingCodes::B as u32 => Ok(BranchingCodes::B),
@@ -81,6 +87,8 @@ impl TryFrom<u32> for BranchingCodes {
 }
 
 impl fmt::Display for BranchingCodes {
+    // This function allows to display a BranchingCodes
+    // (Only used for the verbose mode)
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             BranchingCodes::B => write!(f, "B"),
@@ -94,6 +102,7 @@ impl fmt::Display for BranchingCodes {
     }
 }
 
+// Structure holding all flags
 pub struct Flags {
     pub beq: bool,
     pub bne: bool,
@@ -105,6 +114,7 @@ pub struct Flags {
 }
 
 impl Flags {
+    // Returns the value of the flag according to the BranchingCodes used
     pub fn get_from_bcc(&self, bcc: BranchingCodes) -> bool {
         match bcc {
             BranchingCodes::BEQ => self.beq,
@@ -117,6 +127,8 @@ impl Flags {
         }
     }
 
+    // Returns a string containing the current values of all flags
+    // (this function is only used for the verbose mode)
     pub fn current_flag_states(&self) -> String {
         let mut states = String::from("Current flag states.\n");
         states.push_str(&format!("BEQ   = {}\n", self.beq));
