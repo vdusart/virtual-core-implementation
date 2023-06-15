@@ -3,6 +3,13 @@ Group members:
 - Lucas DRAESCHER
 - Victor DUSART
 
+## Context
+This repo contains the source code of an end-of-module project we did in our final year of engineering school, part of the module was taught by [ANSSI](https://www.ssi.gouv.fr/en/) lecturers.
+
+You can find the file containing the instructions [here](./subject.pdf).
+
+Final grade: 20/20
+
 ## Explanation of the implementation
 We chose a combination of Python and Rust for this project. The compiler is written in Python because it is essentially just array manipulation and Python's powerful list manipulation allowed us to get the compiler done in just a few hours. The core had to be written in a compiled language, per the subjects requirements. We both wanted to learn Rust, so we decided to write the core with it.
 
